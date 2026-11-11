@@ -13,9 +13,9 @@ jobs:
         id: version
         uses: patrickjahns/version-drafter-action@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.api_token }}
       - uses: release-drafter/release-drafter@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.PRIVATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.api_token }}
         with:
           version: ${{ steps.version.outputs.next-version }}
