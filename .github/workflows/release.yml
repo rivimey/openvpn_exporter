@@ -12,18 +12,30 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-go@v7
         with:
           go-version: stable
+
       - name: Set VERSION env
         run: echo VERSION=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev ) >> $GITHUB_ENV
+
       - name: Build artifacts
         run: make release VERSION=${{ env.VERSION }}
-      - name: Upload artifactes to release
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+
+      - name: Upload release artifacts
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/*
-          tag: ${{ github.ref }}
+          tag: ${{ github.ref_name }}
           overwrite: true
           file_glob: true
